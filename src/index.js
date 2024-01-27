@@ -4,7 +4,7 @@ import App from 'components/App';
 import './index.css';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import contactsReducer from 'components/contactsSlice'; 
+import contactsReducer from './redux/contactsSlice';
 
 // Load from local storage
 const loadState = () => {

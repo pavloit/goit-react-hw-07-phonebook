@@ -1,7 +1,4 @@
 import { useState } from 'react';
-import { nanoid } from 'nanoid';
-import { useDispatch, useSelector } from 'react-redux';
-import { actions } from '../contactsSlice'; 
 import styled from 'styled-components';
 
 
@@ -52,12 +49,11 @@ const AddButton = styled.button`
 }
 `;
 
-const ContactForm = () => {
+const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const dispatch = useDispatch();
   
-  const contacts = useSelector(state => state.contacts.contacts);
+  // const contacts = useSelector(state => state.contacts.contacts);
   
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -70,21 +66,12 @@ const ContactForm = () => {
     setNumber(input);
   }
 
-    const handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const newContact = { id: nanoid(), name, number };
-
-       const doesExist = contacts.some(
-      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
-    );
-
-    if (doesExist) {
-      alert(`${newContact.name} is already in contacts.`);
-    } else {
-      dispatch(actions.addContact(newContact));
-    }
-     setName('');
-     setNumber('');
+    
+    onSubmit(name, number);
+    setName('');
+    setNumber('');
   };     
       
       return (
@@ -103,8 +90,9 @@ const ContactForm = () => {
             <StyledNumber>Number:</StyledNumber>
             <InputName
               type="tel"
-              pattern="[0-9]{3}-[0-9]{2}-[0-9]{2}"
-              placeholder="123-45-67"
+              name="number"
+              pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
+              placeholder="0123456789"
               value={number}
               onChange={handleNumberChange}
               required

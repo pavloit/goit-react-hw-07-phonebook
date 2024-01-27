@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { actions } from '../contactsSlice'; 
+import { actions } from '../../redux/contactsSlice'; 
 import styled from 'styled-components';
 
 const ButtonDel = styled.button`

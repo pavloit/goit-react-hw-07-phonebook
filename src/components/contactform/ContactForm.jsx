@@ -26,7 +26,6 @@ font-weight: bold;
 const LabelName = styled.label`
   display: flex;
   flex-direction: column;
-  
 `;
 
 const InputName = styled.input`
@@ -52,8 +51,6 @@ const AddButton = styled.button`
 const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  
-  // const contacts = useSelector(state => state.contacts.contacts);
   
   const handleNameChange = (event) => {
     setName(event.target.value);

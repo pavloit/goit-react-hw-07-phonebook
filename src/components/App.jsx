@@ -21,8 +21,8 @@ const CenteredContainer = styled.div`
 
 const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.contacts.filter);
+  const { contacts, filter } = useSelector(state => state.contacts);
+  
 
    useEffect(() => {
     dispatch(fetchContacts());

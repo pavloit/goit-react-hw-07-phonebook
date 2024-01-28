@@ -1,15 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { actions } from '../redux/contactsSlice'; 
 import ContactForm from './contactform/ContactForm';
 import ContactList from './contactlist/ContactList';
 import Filter from './filter/Filter';
 import styled from 'styled-components';
-import {
-  addContact,
-  deleteContact,
-  fetchContacts,
-} from '../redux/contactsOperations';
-import { setFilter } from '../redux/contactsSlice';
 
 const CenteredContainer = styled.div`
   display: flex;
@@ -20,44 +15,28 @@ const CenteredContainer = styled.div`
 `;
 
 const App = () => {
+ 
   const dispatch = useDispatch();
+  
   const { contacts, filter } = useSelector(state => state.contacts);
   
-
-   useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
-
-  const handleAddContact = (name, number) => {
-    dispatch(addContact({ id: Date.now(), name, number }));
-  };
-
-  const handleDeleteContact = contactId => {
-    dispatch(deleteContact(contactId));
-  };
-
-  const handleFilterChange = e => {
-    dispatch(setFilter(e.target.value));
-  };
-
-  const filteredContacts = contacts
-    ? contacts.filter(contact =>
-        contact.name.toLowerCase().includes(filter.toLowerCase())
-      )
-    : [];
-        
-    return (
-      <CenteredContainer>
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={handleAddContact} />
-        <h2>Contacts</h2>
-        <Filter value={filter} onChange={handleFilterChange} />
-        <ContactList contacts={filteredContacts} onDelete={handleDeleteContact} />
-      </CenteredContainer>
-    );
-  };
+  const deleteContact = id => dispatch(actions.deleteContact(id));
   
-  export default App;
+  const handleFilterChange = event => dispatch(actions.setFilter(event.target.value));
+  
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
+  return (
+    <CenteredContainer>
+      <h1>Phonebook</h1>
+      <ContactForm  />
+      <h2>Contacts</h2>
+      <Filter value={filter} onChange={handleFilterChange} />
+      <ContactList contacts={filteredContacts} onDelete={deleteContact} />
+    </CenteredContainer>
+  );
+};
 
-
+export default App;

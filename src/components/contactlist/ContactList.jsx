@@ -12,7 +12,7 @@ const ContactList = () => {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
-  console.log(contacts);
+  
   return (
     <ItemList>
       {filteredContacts.map(contact => (

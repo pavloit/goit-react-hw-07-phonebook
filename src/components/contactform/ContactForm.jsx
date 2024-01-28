@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchContacts, addContact } from '../../redux/contactsOperations'; 
 import styled from 'styled-components';
 
 
@@ -48,56 +50,71 @@ const AddButton = styled.button`
 }
 `;
 
-const ContactForm = ({ onSubmit }) => {
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
   
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
+  const contacts = useSelector(state => state.contacts.contacts);
+
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
-  
+
   const handleNumberChange = (event) => {
-    let input = event.target.value
-    .replace(/\D/g, "").slice(0, 8)
-    .replace(/(\d{3})(\d{2})(\d{2})/, "$1-$2-$3"); 
+    let input = event.target.value;
+    input = input.replace(/\D/g, "").slice(0, 10); 
+    input = input.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"); 
     setNumber(input);
-  }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    onSubmit(name, number);
-    setName('');
-    setNumber('');
-  };     
-      
-      return (
-        <FormContainer onSubmit={handleSubmit}>
-          <LabelName>
-            <StyledName>Name:</StyledName>
-            <InputName
-              type="text"
-              value={name}
-              onChange={handleNameChange}
-              required
-              placeholder="Name"
-            />
-          </LabelName>
-          <LabelName>
-            <StyledNumber>Number:</StyledNumber>
-            <InputName
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
-              placeholder="0123456789"
-              value={number}
-              onChange={handleNumberChange}
-              required
-            />
-          </LabelName>
-          <AddButton type="submit">Add contact</AddButton>
-        </FormContainer>
-      );
+    const newContact = { name, number };
+
+    const doesExist = contacts.some(
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+    );
+
+    if (doesExist) {
+      alert(`${newContact.name} is already in contacts.`);
+    } else {
+      dispatch(addContact(newContact));
     }
-  
-  export default ContactForm;
+     setName('');
+     setNumber('');
+  };
+
+  return (
+    <FormContainer onSubmit={handleSubmit}>
+      <LabelName>
+        <StyledName>Name:</StyledName>
+        <InputName
+          type="text"
+          value={name}
+          onChange={handleNameChange}
+          required
+          placeholder="Name"
+        />
+      </LabelName>
+      <LabelName>
+        <StyledNumber>Number:</StyledNumber>
+        <InputName
+          type="tel"
+          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          placeholder="222-333-4444"
+          value={number}
+          onChange={handleNumberChange}
+          required
+        />
+      </LabelName>
+      <AddButton type="submit">Add contact</AddButton>
+    </FormContainer>
+  );
+};
+
+export default ContactForm;
